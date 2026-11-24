@@ -35,8 +35,15 @@ def build(ctx):
     build_worker = os.path.exists('worker_src')
     binaries = []
 
+    # FWD debug render builds only (tooling/render.sh): FWD_RENDER="TOD_DAY,COND_CLEAR" forces the scene.
+    # Never set for releases; tooling/release.sh refuses to run with it set.
+    fwd_render = os.environ.get('FWD_RENDER')
+
     for p in ctx.env.TARGET_PLATFORMS:
         ctx.set_env(ctx.all_envs[p])
+        if fwd_render:
+            fwd_tod, fwd_cond = fwd_render.split(',')
+            ctx.env.append_value('DEFINES', ['FWD_FORCE_SCENE', 'FWD_FORCE_TOD=' + fwd_tod, 'FWD_FORCE_COND=' + fwd_cond])
         ctx.set_group(ctx.env.PLATFORM_NAME)
         app_elf = '{}/pebble-app.elf'.format(ctx.env.BUILD_DIR)
         ctx.pbl_program(source=ctx.path.ant_glob('src/c/**/*.c'), target=app_elf)

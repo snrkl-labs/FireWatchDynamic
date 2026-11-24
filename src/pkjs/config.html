@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BigFireWatch Dynamic Settings</title>
+<!-- FWD v0.04.00: bundled settings page (package.json configPage). Talks to PKJS (src/pkjs/index.js)
+     with Pebble.sendMessage('pkjs', ...); PKJS stores the settings and sends them to the watch. -->
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: sans-serif; margin: 16px; color: #111; background: #fff; overflow-x: hidden; }
+  h1 { margin: 0 0 8px; font-size: 22px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; color: #666; margin: 22px 0 6px; }
+  label { display: flex; align-items: center; gap: 10px; font-size: 17px; padding: 8px 0; }
+  select { font-size: 16px; padding: 4px; max-width: 100%; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 17px; padding: 8px 0; }
+  .hint { color: #666; font-size: 14px; margin: -2px 0 4px; }
+  .disabled { opacity: 0.45; }
+  #state { position: sticky; bottom: 0; background: #fff; color: #666; font-size: 14px; padding: 10px 0; }
+</style>
+</head>
+<body>
+<h1>BigFireWatch Dynamic Settings</h1>
+
+<h2>Time and date</h2>
+<div class="row">Type style
+  <select id="type_style">
+    <option value="1">Classic</option>
+    <option value="2">Digital</option>
+    <option value="3">Digital Large</option>
+    <option value="4">Rounded Large</option>
+    <option value="5">Rounded</option>
+  </select>
+</div>
+
+<h2>Tower</h2>
+<label><input type="checkbox" id="smoke_bt"> Smoke shows Bluetooth</label>
+<div class="hint">Smoke while the phone is connected. Off: smoke is always shown.</div>
+<label><input type="checkbox" id="light_battery"> Light shows battery</label>
+<div class="hint">Blue while charging, green at or above the low level, red below. Off: the light is always red.</div>
+<div class="row" id="low_row">Low battery level
+  <select id="light_low_pct"></select>
+</div>
+
+<div id="state">Connecting…</div>
+
+<script>
+  // NB: no top-level `status` variable: it aliases window.status and breaks silently (Test Bench finding).
+  var stateEl = document.getElementById('state');
+  var settings = null;
+  var low = document.getElementById('light_low_pct');
+  for (var p = 10; p <= 90; p += 10) {
+    var o = document.createElement('option'); o.value = String(p); o.textContent = p + '%'; low.appendChild(o);
+  }
+
+  function render() {
+    document.getElementById('type_style').value = String(settings.type_style);
+    document.getElementById('smoke_bt').checked = !!settings.smoke_bt;
+    document.getElementById('light_battery').checked = !!settings.light_battery;
+    low.value = String(settings.light_low_pct);
+    var on = !!settings.light_battery;
+    low.disabled = !on;
+    document.getElementById('low_row').className = on ? 'row' : 'row disabled';
+  }
+
+  function onChange() {
+    settings.type_style = Number(document.getElementById('type_style').value);
+    settings.smoke_bt = document.getElementById('smoke_bt').checked;
+    settings.light_battery = document.getElementById('light_battery').checked;
+    settings.light_low_pct = Number(low.value);
+    render();
+    stateEl.textContent = 'Sending…';
+    Pebble.sendMessage('pkjs', { type: 'set', settings: settings }).then(function (r) {
+      stateEl.textContent = (r && r.ok) ? 'Applied' : 'Not applied: is the watch connected?';
+    });
+  }
+
+  Pebble.addEventListener('ready', function (e) {
+    if (e.target !== 'pkjs') return;
+    Pebble.sendMessage('pkjs', { type: 'get' }).then(function (r) {
+      settings = r.settings;
+      render();
+      Array.prototype.forEach.call(document.querySelectorAll('input, select'), function (el) {
+        el.addEventListener('change', onChange);
+      });
+      stateEl.textContent = 'Ready';
+    });
+  });
+</script>
+</body>
+</html>

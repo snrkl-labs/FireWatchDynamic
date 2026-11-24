@@ -1,19 +1,14 @@
 {
-    "author": "FirstPebble",
-    "dependencies": {
-        "@rebble/clay": "^1.0.10"
-    },
+    "author": "snrkl-labs",
     "keywords": [
         "pebble-app"
     ],
     "name": "firewatch",
     "pebble": {
         "capabilities": [
-            "location",
-            "configurable",
             "health"
         ],
-        "displayName": "FireWatch Dynamic",
+        "displayName": "BigFireWatch Dynamic",
         "enableMultiJS": true,
         "messageKeys": [
             "REQUEST_WEATHER",
@@ -22,11 +17,10 @@
             "SUNRISE",
             "SUNSET",
             "TEMP_UNIT",
-            "TIME_FORMAT",
-            "WEATHER_PROVIDER",
-            "OWM_API_KEY",
-            "WEATHERAPI_KEY",
-            "CUSTOM_LOCATION"
+            "TYPE_STYLE",
+            "SMOKE_BT",
+            "LIGHT_BATTERY",
+            "LIGHT_LOW_PCT"
         ],
         "projectType": "native",
         "resources": {
@@ -68,8 +62,71 @@
                     "type": "bitmap"
                 },
                 {
+                    "file": "images/scene_dawn_partly.png",
+                    "name": "SCENE_DAWN_PARTLY",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/scene_dawn_cloud.png",
+                    "name": "SCENE_DAWN_CLOUD",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/scene_dawn_storm.png",
+                    "name": "SCENE_DAWN_STORM",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/scene_dawn_snow.png",
+                    "name": "SCENE_DAWN_SNOW",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/scene_dusk_clear.png",
                     "name": "SCENE_DUSK_CLEAR",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/scene_dusk_partly.png",
+                    "name": "SCENE_DUSK_PARTLY",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/scene_dusk_cloud.png",
+                    "name": "SCENE_DUSK_CLOUD",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/scene_dusk_storm.png",
+                    "name": "SCENE_DUSK_STORM",
                     "storageFormat": "png",
                     "targetPlatforms": [
                         "emery"
@@ -97,6 +154,15 @@
                 {
                     "file": "images/scene_night_clear.png",
                     "name": "SCENE_NIGHT_CLEAR",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/scene_night_partly.png",
+                    "name": "SCENE_NIGHT_PARTLY",
                     "storageFormat": "png",
                     "targetPlatforms": [
                         "emery"
@@ -201,6 +267,42 @@
                         "emery"
                     ],
                     "type": "bitmap"
+                },
+                {
+                    "file": "images/overlay_smoke.png",
+                    "name": "OVERLAY_SMOKE",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/overlay_light_green.png",
+                    "name": "OVERLAY_LIGHT_GREEN",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/overlay_light_blue.png",
+                    "name": "OVERLAY_LIGHT_BLUE",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/overlay_light_red.png",
+                    "name": "OVERLAY_LIGHT_RED",
+                    "storageFormat": "png",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
                 }
             ]
         },
@@ -208,10 +310,18 @@
         "targetPlatforms": [
             "emery"
         ],
-        "uuid": "0de960fa-1ad2-4fa7-af23-b50442caf56a",
+        "usesPermissions": [
+            {
+                "name": "Location",
+                "reason": "To show the weather for your weather locations in the Pebble app",
+                "required": false
+            }
+        ],
+        "uuid": "c43624ab-91bb-46ec-a627-1f8e1db8bf6f",
         "watchapp": {
             "watchface": true
-        }
+        },
+        "configPage": "src/pkjs/config.html"
     },
-    "version": "1.1.10"
+    "version": "0.05.00"
 }
